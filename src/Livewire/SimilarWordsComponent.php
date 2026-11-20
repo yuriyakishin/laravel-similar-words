@@ -40,6 +40,10 @@ class SimilarWordsComponent extends Component
     #[Locked]
     public ?string $error = null;
 
+    /** Counts the searches; the results block is keyed by it, so every new report is a new block that scrolls into view. */
+    #[Locked]
+    public int $reportNumber = 0;
+
     /** Similarity of the two compared phrases; null until a comparison succeeds. */
     #[Locked]
     public ?float $similarity = null;
@@ -66,6 +70,7 @@ class SimilarWordsComponent extends Component
     public function search(SimilarWordsFinder $finder): void
     {
         $this->reset('report', 'error');
+        $this->reportNumber++;
         $this->phrase = $this->clean($this->phrase);
         $this->validateOnly('phrase', ...$this->rules('phrase'));
 

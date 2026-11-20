@@ -41,7 +41,7 @@ window.similarWords = (report) => ({
         const point = event.target.closest('.sw-pt');
 
         if (point) {
-            this.$wire.searchFor(this.report.items[point.dataset.i].text);
+            this.$dispatch('sw-pick', this.report.items[point.dataset.i].text);
         }
     },
 

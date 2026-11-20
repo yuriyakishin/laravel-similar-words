@@ -14,7 +14,9 @@
         step: 0,
         timer: null,
         start() { this.step = 0; clearInterval(this.timer); this.timer = setInterval(() => this.step = Math.min(this.step + 1, 2), 2500) },
-    }">
+        {{-- The word goes into the field at once, not when the search comes back --}}
+        pick(phrase) { this.$wire.phrase = phrase; this.start(); this.$wire.searchFor(phrase) },
+    }" @sw-pick="pick($event.detail)">
     <form class="wt-tool" wire:submit="search" @submit="start()" novalidate>
         <div class="wt-row">
             <div @class(['wt-field', 'wt-field-err' => $errors->has('phrase')])>
@@ -31,7 +33,7 @@
             <span>{{ $t('form.examples') }}</span>
             @foreach ($t('examples') as $example)
                 <button type="button" @class(['sw-chip', 'sw-on' => $report && $report['phrase'] === $example])
-                        wire:click="searchFor(@js($example))" @click="start()">{{ $example }}</button>
+                        @click="pick(@js($example))">{{ $example }}</button>
             @endforeach
         </div>
         @error('phrase')<p class="wt-error">{{ $message }}</p>@enderror
@@ -48,9 +50,10 @@
     </div>
 
     @if ($report)
-        {{-- The key replaces the block for a new report; wire:ignore keeps the drawn map when only the comparison
+        {{-- The key replaces the block for a new report, which scrolls the tool up to its form; wire:ignore keeps the drawn map when only the comparison
              below changes. Drawing is in resources/js/similar-words.js --}}
-        <div wire:key="sw-{{ md5($report['phrase']) }}" wire:loading.remove wire:target="search,searchFor" aria-live="polite">
+        <div wire:key="sw-report-{{ $reportNumber }}" wire:loading.remove wire:target="search,searchFor" aria-live="polite"
+             x-init="$root.scrollIntoView({ behavior: 'smooth', block: 'start' })">
             <div wire:ignore x-data="similarWords(@js($report))">
                 <div class="sw-res">
                     <div class="sw-card">
@@ -82,7 +85,7 @@
                             @foreach ($report['items'] as $i => $item)
                                 <li class="sw-{{ $item['relation'] }}" x-show="!hidden.includes('{{ $item['relation'] }}')"
                                     :class="{ 'sw-hl': highlight === {{ $i }} }" @mouseenter="highlight = {{ $i }}"
-                                    wire:click="searchFor(@js($item['text']))" title="{{ $relations[$item['relation']] }}">
+                                    @click="pick(@js($item['text']))" title="{{ $relations[$item['relation']] }}">
                                     <span class="sw-n">{{ sprintf('%02d', $i + 1) }}</span>
                                     <span class="sw-w"><i></i><span>{{ $item['text'] }}</span></span>
                                     <span class="sw-s">{{ number_format(max(0, $item['score']), 2) }}</span>
