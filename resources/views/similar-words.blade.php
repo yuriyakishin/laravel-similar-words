@@ -34,7 +34,6 @@
                         wire:click="searchFor(@js($example))" @click="start()">{{ $example }}</button>
             @endforeach
         </div>
-        <p class="wt-hint">{{ $t('form.hint', ['count' => config('similar-words.rate_limit.per_hour')]) }}</p>
         @error('phrase')<p class="wt-error">{{ $message }}</p>@enderror
         @if ($error)
             <p class="wt-error" role="alert">{{ $error }}</p>

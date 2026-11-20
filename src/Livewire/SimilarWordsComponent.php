@@ -70,7 +70,7 @@ class SimilarWordsComponent extends Component
         $this->validateOnly('phrase', ...$this->rules('phrase'));
 
         $this->report = $this->attempt('error', $finder, fn (): array => Cache::remember(
-            self::NAME.':'.sha1(mb_strtolower($this->phrase)).':'.$this->locale,
+            self::NAME.':v2:'.sha1(mb_strtolower($this->phrase)).':'.$this->locale,
             (int) config('similar-words.cache.ttl'),
             function () use ($finder): array {
                 $this->hitRateLimit('search', (int) config('similar-words.rate_limit.per_hour'));

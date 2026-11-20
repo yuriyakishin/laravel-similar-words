@@ -6,19 +6,17 @@ return [
     'form' => [
         'label' => 'Word or phrase',
         'button' => 'Find similar',
-        'hint' => 'Free · no sign-up · up to :count searches per hour · any language',
         'examples' => 'Try:',
     ],
     'examples' => ['coffee', 'cosy coffee shop', 'artificial intelligence', 'website development'],
     'loading' => [
-        'candidates' => 'The AI suggests related words, translations and unrelated ones',
+        'candidates' => 'The AI suggests related words and unrelated ones in the language of your phrase',
         'embeddings' => 'Turning every word into a vector of 1536 numbers',
         'map' => 'Measuring the similarity and drawing the map',
     ],
     'relations' => [
         'synonym' => 'synonym',
         'association' => 'association',
-        'translation' => 'other language',
         'unrelated' => 'unrelated',
     ],
     'map' => [

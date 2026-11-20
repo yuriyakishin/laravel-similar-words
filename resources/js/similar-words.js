@@ -48,7 +48,7 @@ window.similarWords = (report) => ({
     /** Points placed for the current view, labels pushed apart so they do not overlap. */
     positions() {
         const cx = 320, cy = 280, radius = 245;
-        const sector = { synonym: -Math.PI / 2, translation: 0, association: Math.PI * 0.75, unrelated: Math.PI * 1.25 };
+        const sector = { synonym: -Math.PI / 2, association: Math.PI / 6, unrelated: Math.PI * 5 / 6 };
         const points = this.report.items.map((item, i) => ({ ...item, i })).filter((item) => !this.hidden.includes(item.relation)).map((item) => {
             if (this.view === 'radar') {
                 const angle = sector[item.relation] + (random(item.text) - 0.5) * 1.6;

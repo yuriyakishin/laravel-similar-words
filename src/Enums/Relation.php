@@ -11,6 +11,5 @@ enum Relation: string
 {
     case Synonym = 'synonym';
     case Association = 'association';
-    case Translation = 'translation';
     case Unrelated = 'unrelated';
 }

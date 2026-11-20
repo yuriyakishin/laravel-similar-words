@@ -6,7 +6,7 @@
 [![Livewire](https://img.shields.io/badge/livewire-4-fb70a9.svg)](composer.json)
 [![Live Demo](https://img.shields.io/badge/live%20demo-yu.net.ua-brightgreen.svg)](https://yu.net.ua/en/tools/similar-words)
 
-A Livewire tool for Laravel that shows which words and phrases a language model sees as close in meaning to yours. The visitor types a word or phrase in any language. An AI suggests about 40 candidates: synonyms, associations, translations and a few unrelated words. Their embeddings then decide the order: every candidate is ranked by the cosine similarity of its vector and placed on a map of meanings.
+A Livewire tool for Laravel that shows which words and phrases a language model sees as close in meaning to yours. The visitor types a word or phrase in any language. An AI suggests about 40 candidates in the language of the phrase: synonyms, associations and a few unrelated words. Their embeddings then decide the order: every candidate is ranked by the cosine similarity of its vector and placed on a map of meanings.
 
 ![Similar Words map and ranking](images/similar-words.png)
 
@@ -75,7 +75,7 @@ Import the map script into your JS build. It defines `window.similarWords`, whic
 import '../../vendor/yu-laravel/similar-words/resources/js/similar-words.js';
 ```
 
-To match your site's colours and fonts, override the `--wt-*` variables (see [Web Tools Core](https://github.com/yuriyakishin/laravel-web-tools-core#styles)). The colours of the four relations are `--sw-synonym`, `--sw-association`, `--sw-translation` and `--sw-unrelated`.
+To match your site's colours and fonts, override the `--wt-*` variables (see [Web Tools Core](https://github.com/yuriyakishin/laravel-web-tools-core#styles)). The colours of the three relations are `--sw-synonym`, `--sw-association` and `--sw-unrelated`.
 
 ## Configuration
 

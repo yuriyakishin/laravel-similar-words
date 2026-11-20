@@ -1,11 +1,10 @@
 /*
  * Similar words: the example chips, the map, the ranking, the vector fingerprint and the comparison.
- * Uses the --wt-* variables of web-tools-core.css; --sw-* are the colours of the four relations.
+ * Uses the --wt-* variables of web-tools-core.css; --sw-* are the colours of the three relations.
  */
 .sw {
     --sw-synonym: var(--wt-accent);
     --sw-association: #0f766e;
-    --sw-translation: #7c3aed;
     --sw-unrelated: var(--wt-line-strong);
     --sw-pos: var(--wt-accent);
     --sw-neg: var(--wt-err);
@@ -13,7 +12,6 @@
 
 .sw-synonym { --c: var(--sw-synonym); }
 .sw-association { --c: var(--sw-association); }
-.sw-translation { --c: var(--sw-translation); }
 .sw-unrelated { --c: var(--sw-unrelated); }
 
 .sw-examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; font-size: 13px; color: var(--wt-muted); }
