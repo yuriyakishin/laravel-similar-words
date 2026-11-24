@@ -78,7 +78,7 @@
                         <div class="sw-map" @mouseleave="highlight = null">
                             <svg x-ref="svg" viewBox="0 0 640 560" role="img" aria-label="{{ $t('map.label') }}"
                                  @mouseover="pointAt($event)" @click="open($event)"></svg>
-                            <div class="sw-tip" x-ref="tip"></div>
+                            <div class="sw-tip" x-ref="tip" data-green="{{ $t('print.green') }}" data-red="{{ $t('print.red') }}"></div>
                         </div>
                         <div class="sw-foot">{{ $t('map.click') }}</div>
                     </div>
@@ -103,11 +103,14 @@
                 <div class="sw-card sw-print">
                     <div class="sw-ch">
                         <div><h3>{{ $t('print.title') }}</h3><small>{{ $t('print.sub', ['count' => count($report['query']['print']), 'total' => $report['dimensions']]) }}</small></div>
-                        <span class="sw-scale" aria-hidden="true">−<i></i>+</span>
+                        <span class="sw-scale" aria-hidden="true">{{ $t('print.against') }}<i></i>{{ $t('print.agree') }}</span>
                     </div>
                     <div class="sw-fp">
-                        <div class="sw-fp-row"><div><b>{{ $report['phrase'] }}</b><small>{{ $t('print.yours') }}</small></div><div class="sw-cells" x-html="cells(report.query.print)"></div></div>
-                        <div class="sw-fp-row"><div><b x-text="shown().text"></b><small x-text="@js($t('print.score', ['score' => '%s'])).replace('%s', shown().score.toFixed(2))"></small></div><div class="sw-cells" x-html="cells(shown().print)"></div></div>
+                        <div class="sw-fp-row">
+                            <div class="sw-fp-lbl"><b>{{ $report['phrase'] }}</b><small>{{ $t('print.yours') }}</small></div>
+                            <div class="sw-cells" x-html="cells(shown().print)"></div>
+                            <div class="sw-fp-lbl"><b x-text="shown().text"></b><small x-html="@js($t('print.score', ['score' => '%s'])).replace('%s', shown().score.toFixed(2)) + ' · ' + counts(shown().print, @js($t('print.green')), @js($t('print.red')))"></small></div>
+                        </div>
                         <p class="sw-note">{{ $t('print.hint') }} {{ $t('model', ['model' => $report['model'], 'dimensions' => $report['dimensions']]) }}</p>
                     </div>
                 </div>

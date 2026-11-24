@@ -25,8 +25,30 @@ window.similarWords = (report) => ({
         return this.report.items[this.highlight ?? 0];
     },
 
+    /**
+     * One cell per number: the product of the phrase's and the word's number. Same sign = green (pulls the
+     * similarity up), different signs = red (pulls it down), near zero = blank. Cosine similarity is the sum of these.
+     */
     cells(print) {
-        return print.map((v) => `<i class="${v < 0 ? 'sw-neg' : 'sw-pos'}" style="--a:${Math.abs(v) * 11}%"></i>`).join('');
+        return print.map((v, i) => {
+            const product = v * this.report.query.print[i];
+
+            return `<i class="${product < 0 ? 'sw-against' : 'sw-agree'}" style="--a:${Math.round(Math.min(1, Math.sqrt(Math.abs(product) / 36)) * 100)}%"></i>`;
+        }).join('');
+    },
+
+    /** "120 green, 19 red" with each part in its colour; the texts come from the view with :n in place of the number. */
+    counts(print, green, red) {
+        const { agree, against } = this.tally(print);
+
+        return `<span class="sw-c-agree">${escape(green.replace(':n', agree))}</span>, <span class="sw-c-against">${escape(red.replace(':n', against))}</span>`;
+    },
+
+    /** How many of the shown numbers have the same sign in the phrase and in the word (agree) or different signs (against). */
+    tally(print) {
+        const products = print.map((v, i) => v * this.report.query.print[i]);
+
+        return { agree: products.filter((p) => p > 0).length, against: products.filter((p) => p < 0).length };
     },
 
     pointAt(event) {
@@ -126,7 +148,7 @@ window.similarWords = (report) => ({
         this.mark();
     },
 
-    /** Highlights the pointed word on the map and moves the tooltip to it. */
+    /** Highlights the pointed word on the map and moves the tooltip, with a small match strip, to it. */
     mark() {
         const tip = this.$refs.tip;
         let current = null;
@@ -146,7 +168,9 @@ window.similarWords = (report) => ({
 
         const item = this.report.items[this.highlight], scale = this.$refs.svg.getBoundingClientRect().width / 640;
         const label = this.$root.querySelector(`.sw-toggle.sw-${item.relation}`)?.dataset.label ?? '';
-        tip.innerHTML = `${escape(item.text)}<br><b>${Math.max(0, item.score).toFixed(2)}</b> · ${escape(label)}`;
+
+        tip.innerHTML = `${escape(item.text)}<br><b>${Math.max(0, item.score).toFixed(2)}</b> · ${escape(label)}`
+            + `<span class="sw-cells">${this.cells(item.print)}</span><small>${this.counts(item.print, tip.dataset.green, tip.dataset.red)}</small>`;
         tip.style.left = `${current.dataset.x * scale}px`;
         tip.style.top = `${current.dataset.y * scale}px`;
         tip.classList.add('sw-on');

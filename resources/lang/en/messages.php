@@ -34,11 +34,15 @@ return [
         'sub' => 'Cosine similarity of the vectors, 0–1',
     ],
     'print' => [
-        'title' => 'Vector fingerprint',
-        'sub' => 'The first :count of :total numbers the embedding is made of',
+        'title' => 'Where the vectors agree',
+        'sub' => 'The first :count of :total numbers of the embedding, one square per number',
         'yours' => 'your phrase',
+        'agree' => 'match',
+        'against' => 'differ',
         'score' => 'similarity :score',
-        'hint' => 'Point at a word on the map or in the list: the higher the similarity, the more the colour patterns match.',
+        'green' => ':n green',
+        'red' => ':n red',
+        'hint' => 'A square is green when the number has the same sign in your phrase and in the word: it makes them more similar. Red when the signs differ: the number pulls them apart. The brighter the square, the stronger the effect. Similarity is counted over all the numbers; only part of them is shown here. Point at another word on the map or in the list to compare with it.',
     ],
     'compare' => [
         'title' => 'Compare two phrases',

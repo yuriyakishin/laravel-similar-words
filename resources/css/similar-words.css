@@ -3,11 +3,11 @@
  * Uses the --wt-* variables of web-tools-core.css; --sw-* are the colours of the three relations.
  */
 .sw {
-    --sw-synonym: var(--wt-accent);
-    --sw-association: #0f766e;
-    --sw-unrelated: #94a3b8;
-    --sw-pos: var(--wt-accent);
-    --sw-neg: var(--wt-err);
+    --sw-agree: #16a34a;
+    --sw-synonym: var(--sw-agree);
+    --sw-association: #0284c7;
+    --sw-unrelated: var(--sw-against);
+    --sw-against: #e5484d;
 }
 
 .sw-synonym { --c: var(--sw-synonym); }
@@ -59,6 +59,9 @@
 .sw-tip { position: absolute; padding: 7px 10px; border-radius: 8px; background: var(--wt-text); color: var(--wt-surface); font-size: 12.5px; line-height: 1.4; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, calc(-100% - 14px)); transition: opacity .15s; }
 .sw-tip b { font: 600 13px var(--wt-mono); }
 .sw-tip.sw-on { opacity: 1; }
+.sw-tip .sw-cells { grid-template-columns: repeat(48, 5px); gap: 1px; margin-top: 8px; border-radius: 2px; }
+.sw-tip .sw-cells i { background: color-mix(in srgb, var(--sw-c) var(--a), #ffffff1f); }
+.sw-tip small { display: block; margin-top: 4px; font: 11px var(--wt-mono); opacity: .75; }
 .sw-foot { padding: 12px 20px; border-top: 1px solid var(--wt-line); font-size: 12.5px; color: var(--wt-muted); }
 
 /* Ranking */
@@ -74,16 +77,21 @@
 .sw-bar i { display: block; width: var(--v); height: 100%; background: var(--c); }
 
 /* Fingerprint */
-.sw-scale { display: flex; align-items: center; gap: 8px; font: 11px var(--wt-mono); color: var(--wt-muted); }
-.sw-scale i { width: 120px; height: 8px; border: 1px solid var(--wt-line); border-radius: 4px; background: linear-gradient(90deg, var(--sw-neg), var(--wt-surface) 50%, var(--sw-pos)); }
+.sw-scale { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--wt-muted); }
+.sw-scale i { width: 120px; height: 8px; border: 1px solid var(--wt-line); border-radius: 4px; background: linear-gradient(90deg, var(--sw-against), var(--wt-surface) 50%, var(--sw-agree)); }
 .sw-fp { display: grid; gap: 14px; padding: 18px 20px 20px; }
-.sw-fp-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; align-items: center; }
-.sw-fp-row b { display: block; overflow: hidden; font-size: 13.5px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-.sw-fp-row small { display: block; font: 11px var(--wt-mono); color: var(--wt-muted); }
+.sw-fp-row { display: grid; gap: 8px; }
+.sw-fp-lbl { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.sw-fp-lbl b { font-size: 16px; font-weight: 600; color: var(--wt-text); }
+.sw-fp-lbl small { font: 13px var(--wt-mono); color: var(--wt-text-2); }
+.sw-c-agree { color: var(--sw-agree); font-weight: 600; }
+.sw-c-against { color: var(--sw-against); font-weight: 600; }
+.sw-tip .sw-c-agree { color: #4ade80; }
+.sw-tip .sw-c-against { color: #f87171; }
 .sw-cells { display: grid; grid-template-columns: repeat(96, 1fr); gap: 1px; border-radius: 4px; overflow: hidden; }
 .sw-cells i { aspect-ratio: 1; background: color-mix(in srgb, var(--sw-c) var(--a), var(--wt-surface)); }
-.sw-cells .sw-pos { --sw-c: var(--sw-pos); }
-.sw-cells .sw-neg { --sw-c: var(--sw-neg); }
+.sw-cells .sw-agree { --sw-c: var(--sw-agree); }
+.sw-cells .sw-against { --sw-c: var(--sw-against); }
 .sw-note { margin: 0; font-size: 13px; color: var(--wt-muted); }
 
 /* Comparison */
@@ -97,7 +105,7 @@
 .sw-gauge p { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin: 0; }
 .sw-gauge b { font: 600 34px var(--wt-mono); letter-spacing: -.02em; }
 .sw-gauge span { font-size: 15px; color: var(--wt-text-2); }
-.sw-gscale { position: relative; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--sw-unrelated), var(--sw-association) 55%, var(--sw-synonym)); }
+.sw-gscale { position: relative; height: 10px; border-radius: 5px; border: 1px solid var(--wt-line); background: linear-gradient(90deg, var(--sw-against), var(--wt-surface) 50%, var(--sw-agree)); }
 .sw-gscale i { position: absolute; top: 50%; left: var(--v); width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 4px solid var(--wt-text); border-radius: 50%; background: var(--wt-surface); box-shadow: 0 2px 6px #0003; }
 .sw-marks { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--wt-muted); }
 
@@ -107,7 +115,6 @@
 }
 
 @media (max-width: 560px) {
-    .sw-fp-row { grid-template-columns: 1fr; gap: 6px; }
     .sw-cells { grid-template-columns: repeat(48, 1fr); }
     .sw-cmp { grid-template-columns: 1fr; }
     .sw-vs { text-align: center; }
