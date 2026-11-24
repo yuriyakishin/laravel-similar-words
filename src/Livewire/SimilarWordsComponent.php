@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Throwable;
+use Yu\SimilarWords\Events\SimilarWordsComparedEvent;
+use Yu\SimilarWords\Events\SimilarWordsEvent;
 use Yu\SimilarWords\Services\SimilarWordsFinder;
 use Yu\WebToolsCore\Exceptions\ToolException;
 use Yu\WebToolsCore\Locale\LocaleResolver;
@@ -74,15 +76,18 @@ class SimilarWordsComponent extends Component
         $this->phrase = $this->clean($this->phrase);
         $this->validateOnly('phrase', ...$this->rules('phrase'));
 
+        $cacheKey = self::NAME.':v3:'.sha1(mb_strtolower($this->phrase)).':'.$this->locale;
+        $fromCache = Cache::has($cacheKey);
+
         $this->report = $this->attempt('error', $finder, fn (): array => Cache::remember(
-            self::NAME.':v2:'.sha1(mb_strtolower($this->phrase)).':'.$this->locale,
+            $cacheKey,
             (int) config('similar-words.cache.ttl'),
             function () use ($finder): array {
                 $this->hitRateLimit('search', (int) config('similar-words.rate_limit.per_hour'));
 
                 return $finder->find($this->phrase, $this->locale);
             },
-        ));
+        ), fn (?array $report, ?string $error) => SimilarWordsEvent::dispatch($this->phrase, $this->locale, $report, $error, $fromCache && $error === null));
 
         if ($this->report !== null && $this->first === '' && $this->second === '') {
             $this->first = $this->report['phrase'];
@@ -101,15 +106,18 @@ class SimilarWordsComponent extends Component
         $pair = [mb_strtolower($this->first), mb_strtolower($this->second)];
         sort($pair);
 
+        $cacheKey = self::NAME.':pair:'.sha1(implode("\n", $pair));
+        $fromCache = Cache::has($cacheKey);
+
         $this->similarity = $this->attempt('compareError', $finder, fn (): float => Cache::remember(
-            self::NAME.':pair:'.sha1(implode("\n", $pair)),
+            $cacheKey,
             (int) config('similar-words.cache.ttl'),
             function () use ($finder): float {
                 $this->hitRateLimit('compare', (int) config('similar-words.rate_limit.compare_per_hour'));
 
                 return $finder->compare($this->first, $this->second);
             },
-        ));
+        ), fn (?float $similarity, ?string $error) => SimilarWordsComparedEvent::dispatch($this->first, $this->second, $this->locale, $similarity, $error, $fromCache && $error === null));
     }
 
     public function render(): View
@@ -119,22 +127,29 @@ class SimilarWordsComponent extends Component
 
     /**
      * Runs a request to the AI and turns its failures into a translated message in $errorProperty.
+     * $finished gets the result and the reason code of the failure, so the site learns about every finished request.
      */
-    private function attempt(string $errorProperty, SimilarWordsFinder $finder, Closure $request): mixed
+    private function attempt(string $errorProperty, SimilarWordsFinder $finder, Closure $request, Closure $finished): mixed
     {
         if (!config('similar-words.enabled') || !$finder->isConfigured()) {
             $this->{$errorProperty} = $this->message('errors.disabled');
+            $finished(null, 'disabled');
 
             return null;
         }
 
         try {
-            return $request();
+            $result = $request();
+            $finished($result, null);
+
+            return $result;
         } catch (ToolException $e) {
             $this->{$errorProperty} = $this->message('errors.'.$e->reason, $e->replace);
+            $finished(null, $e->reason);
         } catch (Throwable $e) {
             report($e);
             $this->{$errorProperty} = $this->message('errors.generic');
+            $finished(null, 'generic');
         }
 
         return null;

@@ -96,6 +96,11 @@ A search costs one chat request and one embeddings request, a fraction of a cent
 
 With `text-embedding-3-small`, even synonyms usually score 0.5–0.7, and unrelated words 0.1–0.25. What matters is the order: the higher a word is in the list, the closer it is in meaning. Short words in languages other than English score lower and are less consistent.
 
+## Events
+
+- `Yu\SimilarWords\Events\SimilarWordsEvent` fires after every finished search: successful, failed or from the cache. It carries `phrase`, `locale`, `report` (null on failure), `error` and `fromCache`.
+- `Yu\SimilarWords\Events\SimilarWordsComparedEvent` fires after every finished comparison of two phrases. It carries `first`, `second`, `locale`, `similarity` (null on failure), `error` and `fromCache`.
+
 ## Languages
 
 The interface comes in English and Ukrainian. The language is taken from the visitor's browser, with your app locale as the fallback. Phrases can be in any language.

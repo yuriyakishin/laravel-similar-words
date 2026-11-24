@@ -55,6 +55,17 @@
         <div wire:key="sw-report-{{ $reportNumber }}" wire:loading.remove wire:target="search,searchFor" aria-live="polite"
              x-init="$root.scrollIntoView({ behavior: 'smooth', block: 'start' })">
             <div wire:ignore x-data="similarWords(@js($report))">
+                {{-- Hides or shows a relation on the map and in the ranking at once --}}
+                <div class="sw-filter" role="group" aria-label="{{ $t('show') }}">
+                    <span>{{ $t('show') }}</span>
+                    @foreach ($relations as $relation => $label)
+                        <button type="button" class="sw-toggle sw-{{ $relation }}" data-label="{{ $label }}" :class="{ 'sw-off': hidden.includes('{{ $relation }}') }"
+                                :aria-pressed="!hidden.includes('{{ $relation }}')" @click="toggle('{{ $relation }}')">
+                            <i></i>{{ $label }} <b>{{ count(array_filter($report['items'], fn (array $item): bool => $item['relation'] === $relation)) }}</b>
+                        </button>
+                    @endforeach
+                </div>
+
                 <div class="sw-res">
                     <div class="sw-card">
                         <div class="sw-ch">
@@ -69,14 +80,7 @@
                                  @mouseover="pointAt($event)" @click="open($event)"></svg>
                             <div class="sw-tip" x-ref="tip"></div>
                         </div>
-                        <div class="sw-legend">
-                            @foreach ($relations as $relation => $label)
-                                <button type="button" class="sw-{{ $relation }}" :class="{ 'sw-off': hidden.includes('{{ $relation }}') }" @click="toggle('{{ $relation }}')">
-                                    <i></i>{{ $label }} · {{ count(array_filter($report['items'], fn (array $item): bool => $item['relation'] === $relation)) }}
-                                </button>
-                            @endforeach
-                            <span class="sw-click">{{ $t('map.click') }}</span>
-                        </div>
+                        <div class="sw-foot">{{ $t('map.click') }}</div>
                     </div>
     
                     <div class="sw-card">

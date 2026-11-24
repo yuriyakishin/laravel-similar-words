@@ -14,6 +14,7 @@ return [
         'embeddings' => 'Turning every word into a vector of 1536 numbers',
         'map' => 'Measuring the similarity and drawing the map',
     ],
+    'show' => 'Show:',
     'relations' => [
         'synonym' => 'synonym',
         'association' => 'association',

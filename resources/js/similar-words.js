@@ -145,7 +145,7 @@ window.similarWords = (report) => ({
         }
 
         const item = this.report.items[this.highlight], scale = this.$refs.svg.getBoundingClientRect().width / 640;
-        const label = this.$root.querySelector(`.sw-legend .sw-${item.relation}`)?.textContent.split('·')[0].trim() ?? '';
+        const label = this.$root.querySelector(`.sw-toggle.sw-${item.relation}`)?.dataset.label ?? '';
         tip.innerHTML = `${escape(item.text)}<br><b>${Math.max(0, item.score).toFixed(2)}</b> · ${escape(label)}`;
         tip.style.left = `${current.dataset.x * scale}px`;
         tip.style.top = `${current.dataset.y * scale}px`;

@@ -14,8 +14,15 @@ return [
         'timeout' => (int) env('SIMILAR_WORDS_OPENAI_TIMEOUT', 25),
     ],
 
-    /* Words and phrases the AI suggests for one search. */
-    'candidates' => 40,
+    /*
+     * Words and phrases the AI suggests for one search, by relation to the phrase. The AI is asked for each group
+     * separately, and a longer answer is cut to these numbers: the unrelated words are only a scale, not the result.
+     */
+    'candidates' => [
+        'synonym' => 10,
+        'association' => 22,
+        'unrelated' => 8,
+    ],
 
     /* Numbers of the vector shown as its "fingerprint": the first ones carry the most meaning in text-embedding-3. */
     'fingerprint' => 192,
