@@ -76,7 +76,8 @@ class SimilarWordsComponent extends Component
         $this->phrase = $this->clean($this->phrase);
         $this->validateOnly('phrase', ...$this->rules('phrase'));
 
-        $cacheKey = self::NAME.':v3:'.sha1(mb_strtolower($this->phrase)).':'.$this->locale;
+        // The case matters to the model ("Кава" and "кава" get different vectors), so each spelling is its own search
+        $cacheKey = self::NAME.':v5:'.sha1($this->phrase).':'.$this->locale;
         $fromCache = Cache::has($cacheKey);
 
         $this->report = $this->attempt('error', $finder, fn (): array => Cache::remember(
@@ -103,19 +104,21 @@ class SimilarWordsComponent extends Component
         $this->validateOnly('first', ...$this->rules('first'));
         $this->validateOnly('second', ...$this->rules('second'));
 
-        $pair = [mb_strtolower($this->first), mb_strtolower($this->second)];
+        $pair = [$this->first, $this->second];
         sort($pair);
 
-        $cacheKey = self::NAME.':pair:'.sha1(implode("\n", $pair));
+        // Embeddings depend on the case ("Гарячий / холодний" 0.49, "гарячий / холодний" 0.56): the visitor sees the score
+        // for exactly what was typed, so the cache keeps every spelling apart; only the order of the two phrases does not matter
+        $cacheKey = self::NAME.':pair:v3:'.sha1(implode("\n", $pair));
         $fromCache = Cache::has($cacheKey);
 
         $this->similarity = $this->attempt('compareError', $finder, fn (): float => Cache::remember(
             $cacheKey,
             (int) config('similar-words.cache.ttl'),
-            function () use ($finder): float {
+            function () use ($finder, $pair): float {
                 $this->hitRateLimit('compare', (int) config('similar-words.rate_limit.compare_per_hour'));
 
-                return $finder->compare($this->first, $this->second);
+                return $finder->compare($pair[0], $pair[1]);
             },
         ), fn (?float $similarity, ?string $error) => SimilarWordsComparedEvent::dispatch($this->first, $this->second, $this->locale, $similarity, $error, $fromCache && $error === null));
     }

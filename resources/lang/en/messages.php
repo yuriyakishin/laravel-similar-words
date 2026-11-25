@@ -27,11 +27,12 @@ return [
         'plane' => '2D map',
         'radar_sub' => 'Closer to the centre = more similar',
         'plane_sub' => 'Vectors squeezed to 2 dimensions (PCA): close together = similar meaning',
-        'click' => 'Click a word to search for it',
+        'click' => 'Click to show the word in “Where the vectors agree”, double-click to search for it',
     ],
     'rank' => [
         'title' => 'Nearest in meaning',
         'sub' => 'Cosine similarity of the vectors, 0–1',
+        'click' => 'Click to show the word in “Where the vectors agree”, double-click to search for it',
     ],
     'print' => [
         'title' => 'Where the vectors agree',
@@ -42,7 +43,7 @@ return [
         'score' => 'similarity :score',
         'green' => ':n green',
         'red' => ':n red',
-        'hint' => 'A square is green when the number has the same sign in your phrase and in the word: it makes them more similar. Red when the signs differ: the number pulls them apart. The brighter the square, the stronger the effect. Similarity is counted over all the numbers; only part of them is shown here. Point at another word on the map or in the list to compare with it.',
+        'hint' => 'A square is green when the number has the same sign in your phrase and in the word: it makes them more similar. Red when the signs differ: the number pulls them apart. The brighter the square, the stronger the effect. Similarity is counted over all the numbers; only part of them is shown here. Point at another word on the map or in the list to compare with it, or click a word to keep it here.',
     ],
     'compare' => [
         'title' => 'Compare two phrases',

@@ -53,6 +53,8 @@
 .sw-pt text { font: 12px var(--wt-font); fill: var(--wt-text-2); paint-order: stroke; stroke: var(--wt-surface); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
 .sw-pt.sw-hl circle { stroke: var(--wt-text); stroke-width: 2.5; }
 .sw-pt.sw-hl text { fill: var(--wt-text); font-weight: 600; }
+.sw-pt.sw-pin circle { stroke: var(--wt-accent); stroke-width: 3; }
+.sw-pt.sw-pin text { font-weight: 600; }
 .sw-pt.sw-dim { opacity: .2; }
 .sw-center circle { fill: var(--wt-text); }
 .sw-center text { font: 600 14px var(--wt-font); fill: var(--wt-text); paint-order: stroke; stroke: var(--wt-surface); stroke-width: 5px; }
@@ -68,6 +70,7 @@
 .sw-rank { max-height: 560px; margin: 0; padding: 0; list-style: none; overflow: auto; }
 .sw-rank li { display: grid; grid-template-columns: 22px minmax(0, 1fr) 44px; gap: 4px 10px; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--wt-line); cursor: pointer; }
 .sw-rank li:hover, .sw-rank li.sw-hl { background: var(--wt-accent-soft); }
+.sw-rank li.sw-pin { box-shadow: inset 3px 0 0 var(--wt-accent); background: var(--wt-accent-soft); }
 .sw-n { font: 11px var(--wt-mono); color: var(--wt-muted); }
 .sw-w { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; }
 .sw-w span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

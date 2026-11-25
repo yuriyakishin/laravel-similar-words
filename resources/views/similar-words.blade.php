@@ -77,7 +77,7 @@
                         </div>
                         <div class="sw-map" @mouseleave="highlight = null">
                             <svg x-ref="svg" viewBox="0 0 640 560" role="img" aria-label="{{ $t('map.label') }}"
-                                 @mouseover="pointAt($event)" @click="open($event)"></svg>
+                                 @mouseover="pointAt($event)" @click="pinAt($event)" @dblclick="open($event)"></svg>
                             <div class="sw-tip" x-ref="tip" data-green="{{ $t('print.green') }}" data-red="{{ $t('print.red') }}"></div>
                         </div>
                         <div class="sw-foot">{{ $t('map.click') }}</div>
@@ -88,8 +88,8 @@
                         <ol class="sw-rank" @mouseleave="highlight = null">
                             @foreach ($report['items'] as $i => $item)
                                 <li class="sw-{{ $item['relation'] }}" x-show="!hidden.includes('{{ $item['relation'] }}')"
-                                    :class="{ 'sw-hl': highlight === {{ $i }} }" @mouseenter="highlight = {{ $i }}"
-                                    @click="pick(@js($item['text']))" title="{{ $relations[$item['relation']] }}">
+                                    :class="{ 'sw-hl': highlight === {{ $i }}, 'sw-pin': pinned === {{ $i }} }" :aria-current="pinned === {{ $i }}" @mouseenter="highlight = {{ $i }}"
+                                    @click="pin({{ $i }})" @dblclick="pick(@js($item['text']))" title="{{ $relations[$item['relation']] }}">
                                     <span class="sw-n">{{ sprintf('%02d', $i + 1) }}</span>
                                     <span class="sw-w"><i></i><span>{{ $item['text'] }}</span></span>
                                     <span class="sw-s">{{ number_format(max(0, $item['score']), 2) }}</span>
@@ -97,6 +97,7 @@
                                 </li>
                             @endforeach
                         </ol>
+                        <div class="sw-foot">{{ $t('rank.click') }}</div>
                     </div>
                 </div>
     

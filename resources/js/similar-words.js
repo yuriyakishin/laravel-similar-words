@@ -8,21 +8,28 @@ window.similarWords = (report) => ({
     view: 'radar',
     hidden: [],
     highlight: null,
+    pinned: 0,
 
     init() {
         this.draw();
         this.$watch('view', () => this.draw());
         this.$watch('hidden', () => this.draw());
         this.$watch('highlight', () => this.mark());
+        this.$watch('pinned', () => this.mark());
     },
 
     toggle(relation) {
         this.hidden = this.hidden.includes(relation) ? this.hidden.filter((r) => r !== relation) : [...this.hidden, relation];
     },
 
-    /** The word shown in the second fingerprint row: the one pointed at, or the nearest one. */
+    /** The word shown in the second fingerprint row: the one pointed at, else the one clicked in the ranking (the nearest at first). */
     shown() {
-        return this.report.items[this.highlight ?? 0];
+        return this.report.items[this.highlight ?? this.pinned];
+    },
+
+    /** A click in the ranking fixes the word in the match strip; a double click searches for it. */
+    pin(i) {
+        this.pinned = i;
     },
 
     /**
@@ -59,6 +66,16 @@ window.similarWords = (report) => ({
         }
     },
 
+    /** A click on a point fixes the word in the match strip, as in the ranking. */
+    pinAt(event) {
+        const point = event.target.closest('.sw-pt');
+
+        if (point) {
+            this.pin(Number(point.dataset.i));
+        }
+    },
+
+    /** A double click on a point searches for the word. */
     open(event) {
         const point = event.target.closest('.sw-pt');
 
@@ -156,6 +173,7 @@ window.similarWords = (report) => ({
         this.$refs.svg.querySelectorAll('.sw-pt').forEach((g) => {
             const on = Number(g.dataset.i) === this.highlight;
             g.classList.toggle('sw-hl', on);
+            g.classList.toggle('sw-pin', Number(g.dataset.i) === this.pinned);
             g.classList.toggle('sw-dim', this.highlight !== null && !on);
             current = on ? g : current;
         });
